@@ -1,11 +1,6 @@
 /**
- * An interface for representing nodes in a state space.
- * 
- * @author Sjaak Smetsers
- * @version 1.3
- * @date 25-02-2017
+ * @author Zaid Ajaj - s4807561
  */
-
 import java.util.Collection;
 import java.util.List;
 

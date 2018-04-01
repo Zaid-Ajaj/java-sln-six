@@ -2,13 +2,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.*; 
+import java.lang.*;
 
 /**
- * @author Pieter Koopman, Sjaak Smetsers
- * @version 1.3
- * @date 07-03-2016
- * A template implementation of a sliding game 
- * implementing the Graph interface
+ * @author Zaid Ajaj - s4807561
  */
 public class SlidingGame implements Configuration {
 
@@ -40,6 +38,23 @@ public class SlidingGame implements Configuration {
                 holeY = p / N;
             }
         }
+    }
+
+
+    @Override
+    public boolean equals(Object o) 
+    {
+        SlidingGame other = (SlidingGame)o;
+
+        for(int y = 0; y < N; ++y) {
+            for(int x = 0; x < N; ++x) {
+                if(board[x][y] != other.board[x][y]) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
 
@@ -76,11 +91,6 @@ public class SlidingGame implements Configuration {
     }
 
     @Override
-    public boolean equals(Object o) {
-        throw new UnsupportedOperationException("equals : not supported yet.");
-    }
-
-    @Override
     public boolean isSolution() 
     {
         int counter = 1;
@@ -111,72 +121,51 @@ public class SlidingGame implements Configuration {
             }
         }
 
-        return result.toArray(new Integer[result.size()]);
+        return result.stream().mapToInt(i -> i).toArray();
     }
 
-    int[] nextConfigToEast(int[][] current) 
-    {
-        int[][] clone = copyBoard(current);
+    private SlidingGame createNext(int x, int y) {
+        SlidingGame game = new SlidingGame(createConfig(copyBoard(this.board)));
 
-        for (int y = 0; y < N; y++)
-        {
-            for(int x = 0; x < N; x++)
-            {
-                if (current[x][y] == N * N)
-                {
-                    if (x < N - 1)
-                    {
-                        int temp = clone[x + 1][y];
-                        clone[x + 1][y] = N * N;
-                        clone[x][y] = temp;
-                    }
-                }
-            }
-        }
+        game.board[holeX][holeY] = game.board[x][y];
+        game.board[x][y] = HOLE;
+        game.holeX = x;
+        game.holeY = y;
 
-        return null;
-    }
-
-    private Configuration createNextConfigInDirection(Direction direction)
-    {
-        if (direction == Direction.EAST)
-        {
-            if (holeX + 1 > N) 
-            {
-                return new SlidingGame(copyBoard(this.board)); 
-            }
-
-
-            holeX = holeX + 1;
-
-            
-
-        }
-        else if (direction == Direction.WEST)
-        {
-
-        }
-        else if (direction == Direction.NORTH)
-        {
-
-        }
-        else
-        {
-
-        }
-
-        return null;
+        return game;
     }
 
     @Override
-    public Collection<Configuration> successors() 
-    {
-        throw new UnsupportedOperationException("successors : not supported yet.");
+    public Collection<Configuration> successors() {
+        // the output list of successors
+        Collection<Configuration> successors = new ArrayList<>();
+
+        if (holeX > 0) 
+        { 
+            successors.add(createNext(holeX - 1, holeY));
+        }
+
+        if (holeX < N - 1) 
+        { 
+            successors.add(createNext(holeX + 1, holeY));
+        }
+
+        if (holeY > 0) 
+        { 
+            successors.add(createNext(holeX, holeY - 1));
+        }
+
+        if(holeY < N - 1) 
+        {
+            successors.add(createNext(holeX, holeY + 1));
+        }
+
+        return successors;
     }
 
     @Override
     public int compareTo(Configuration g) {
-        throw new UnsupportedOperationException("compareTo : not supported yet.");
+        return equals(g) ? 0 : 1;
     }
 
     @Override

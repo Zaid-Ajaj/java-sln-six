@@ -3,11 +3,7 @@ import java.util.*;
 
 
 /**
- * A class that implements a breadth-first search algorithm
- * for finding the Configurations for which the isSolution predicate holds
- * @author Pieter Koopman, Sjaak Smetsers
- * @version 1.5
- * @date 25-02-2017
+ * @author Zaid Ajaj - s4807561
  */
 public class Solver
 {
@@ -15,7 +11,8 @@ public class Solver
     Queue<Configuration> toExamine;
 
     public Solver( Configuration g ) {
-        throw new UnsupportedOperationException( "Solver: not supported yet." );
+        toExamine = new PriorityQueue<>();
+        toExamine.add(g);
     }
 
     /**
@@ -23,13 +20,21 @@ public class Solver
      *
      * @return a string representation of the solution
      */
-    public String solve() {
-        while ( ! toExamine.isEmpty() ) {
+    public String solve() 
+    {
+        while ( ! toExamine.isEmpty() ) 
+        {
             Configuration next = toExamine.remove();
-            if ( next.isSolution() ) {
+            System.out.println(next);
+
+            if ( next.isSolution() ) 
+            {
                 return "Success!";
-            } else {
-                for ( Configuration succ : next.successors() ) {
+            } 
+            else 
+            {
+                for ( Configuration succ : next.successors() ) 
+                {
                     toExamine.add(succ);
                 }
             }
